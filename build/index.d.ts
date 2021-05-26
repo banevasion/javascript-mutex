@@ -1,7 +1,3 @@
-declare type Lock = {
-    unlockPromise: Promise<void>;
-    lock: () => void;
-};
 declare class Mutex<T> {
     maxAccesses: number;
     private currentAccesses;
@@ -12,6 +8,6 @@ declare class Mutex<T> {
         content: T;
         unlock: () => void;
     }>;
-    processLock(lock: Lock): Promise<void>;
+    private processLock;
 }
 export default Mutex;

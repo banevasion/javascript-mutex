@@ -39,7 +39,7 @@ class Mutex<T> {
     return { content: this.content, unlock };
   }
 
-  async processLock(lock: Lock) {
+  private async processLock(lock: Lock) {
     if (this.currentAccesses >= this.maxAccesses) {
       while (this.locks[this.maxAccesses - 1] !== lock) {
         await Promise.race(this.locks.map((lock) => lock.unlockPromise));
