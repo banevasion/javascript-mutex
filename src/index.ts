@@ -3,15 +3,15 @@ type Lock = {
   lock: () => void;
 };
 
-class Mutex {
+class Mutex<T> {
   maxAccesses: number;
   private currentAccesses: number;
 
   private locks: Array<Lock>;
 
-  private content: any;
+  private content: T;
 
-  constructor(content: any, maxAccesses: number = 0) {
+  constructor(content: T, maxAccesses: number = 0) {
     this.content = content;
     this.maxAccesses = maxAccesses;
     this.locks = [];
