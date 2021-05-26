@@ -9,7 +9,7 @@ class Mutex<T> {
 
   private locks: Array<Lock>;
 
-  private content: T;
+  readonly content: T;
 
   constructor(content: T, maxAccesses: number = 0) {
     this.content = content;
