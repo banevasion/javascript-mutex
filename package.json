@@ -1,6 +1,6 @@
 {
-  "name": "mutex",
-  "version": "0.0.2",
+  "name": "javascript-mutex",
+  "version": "0.0.1",
   "main": "build/index.js",
   "scripts": {
     "build": "tsc"
