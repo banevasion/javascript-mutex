@@ -5,11 +5,11 @@ type Lock = {
 
 class Mutex {
   maxAccesses: number;
-  currentAccesses: number;
+  private currentAccesses: number;
 
-  locks: Array<Lock>;
+  private locks: Array<Lock>;
 
-  content: any;
+  private content: any;
 
   constructor(content: any, maxAccesses: number = 0) {
     this.content = content;

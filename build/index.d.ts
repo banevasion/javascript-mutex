@@ -4,9 +4,9 @@ declare type Lock = {
 };
 declare class Mutex {
     maxAccesses: number;
-    currentAccesses: number;
-    locks: Array<Lock>;
-    content: any;
+    private currentAccesses;
+    private locks;
+    private content;
     constructor(content: any, maxAccesses?: number);
     lock(): Promise<{
         content: any;
