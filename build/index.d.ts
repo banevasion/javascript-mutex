@@ -9,7 +9,7 @@ declare class Mutex<T> {
     readonly content: Content<T>;
     constructor(content: Content<T>, maxAccesses?: number);
     lock(): Promise<{
-        content: Content<T>;
+        content: T;
         unlock: () => void;
     }>;
     private processLock;

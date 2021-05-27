@@ -42,7 +42,7 @@ class Mutex<T> {
 
     await lockPromise;
 
-    return { content: this.content, unlock };
+    return { content: this.content as T, unlock };
   }
 
   private async processLock(lock: Lock) {
