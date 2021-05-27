@@ -2,6 +2,8 @@ type ReadonlyDeep<T> = {
   readonly [P in keyof T]: ReadonlyDeep<T[P]>;
 };
 
+type Content<T> = T extends object ? ReadonlyDeep<T> : T;
+
 type Lock = {
   unlockPromise: Promise<void>;
   lock: () => void;
@@ -13,9 +15,9 @@ class Mutex<T> {
 
   private locks: Array<Lock>;
 
-  readonly content: ReadonlyDeep<T>;
+  readonly content: Content<T>;
 
-  constructor(content: T, maxAccesses: number = 0) {
+  constructor(content: Content<T>, maxAccesses: number = 0) {
     this.content = content;
     this.maxAccesses = maxAccesses;
     this.locks = [];
