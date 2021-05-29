@@ -12,6 +12,7 @@ declare class Mutex<T> {
         content: T;
         unlock: () => void;
     }>;
+    isLocked(): Promise<boolean>;
     private processLock;
 }
 export default Mutex;

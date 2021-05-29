@@ -45,6 +45,10 @@ class Mutex<T> {
     return { content: this.content as T, unlock };
   }
 
+  async isLocked() {
+    return this.currentAccesses >= this.maxAccesses;
+  }
+
   private async processLock(lock: Lock) {
     if (this.currentAccesses >= this.maxAccesses) {
       while (this.locks[this.maxAccesses - 1] !== lock) {
