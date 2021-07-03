@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Mutex = (function () {
     function Mutex(content, maxAccesses) {
-        if (maxAccesses === void 0) { maxAccesses = 0; }
+        if (maxAccesses === void 0) { maxAccesses = 1; }
         this.content = content;
         this.maxAccesses = maxAccesses;
         this.locks = [];

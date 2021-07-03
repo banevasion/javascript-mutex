@@ -17,7 +17,7 @@ class Mutex<T> {
 
   readonly content: Content<T>;
 
-  constructor(content: Content<T>, maxAccesses: number = 0) {
+  constructor(content: Content<T>, maxAccesses: number = 1) {
     this.content = content;
     this.maxAccesses = maxAccesses;
     this.locks = [];
