@@ -4,9 +4,14 @@ type ReadonlyDeep<T> = {
 
 type Content<T> = T extends object ? ReadonlyDeep<T> : T;
 
-type Lock = {
+export type Lock = {
   unlockPromise: Promise<void>;
   lock: () => void;
+};
+
+export type LockGuard<T> = {
+  content: T;
+  unlock: () => void;
 };
 
 class Mutex<T> {
@@ -15,16 +20,16 @@ class Mutex<T> {
 
   private locks: Array<Lock>;
 
-  readonly content: Content<T>;
+  private contentWrap: { content: Content<T> };
 
   constructor(content: Content<T>, maxAccesses: number = 1) {
-    this.content = content;
+    this.contentWrap = { content };
     this.maxAccesses = maxAccesses;
     this.locks = [];
     this.currentAccesses = 0;
   }
 
-  async lock() {
+  async lock(): Promise<LockGuard<T>> {
     var lock = () => {};
     const lockPromise = new Promise<void>((resolve) => (lock = resolve));
 
@@ -42,11 +47,15 @@ class Mutex<T> {
 
     await lockPromise;
 
-    return { content: this.content as T, unlock };
+    return Object.assign(this.contentWrap as { content: T }, { unlock });
   }
 
   async isLocked() {
     return this.currentAccesses >= this.maxAccesses;
+  }
+
+  get content() {
+    return this.contentWrap.content;
   }
 
   private async processLock(lock: Lock) {

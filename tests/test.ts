@@ -5,7 +5,7 @@ const mutex = new Mutex(0);
 (async () => {
   const lock = await mutex.lock();
 
-  lock.content = 1;
+  lock.content++;
 
   lock.unlock();
 
