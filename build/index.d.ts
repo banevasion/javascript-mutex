@@ -9,6 +9,7 @@ export declare type Lock = {
 export declare type LockGuard<T> = {
     content: T;
     unlock: () => void;
+    unlockPromise: Promise<void>;
 };
 declare class Mutex<T> {
     maxAccesses: number;
@@ -18,7 +19,9 @@ declare class Mutex<T> {
     constructor(content: Content<T>, maxAccesses?: number);
     lock(): Promise<LockGuard<T>>;
     isLocked(): Promise<boolean>;
-    get content(): Content<T>;
+    getContent(): {
+        content: Content<T>;
+    };
     private processLock;
 }
 export default Mutex;

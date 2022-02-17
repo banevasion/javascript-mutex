@@ -12,6 +12,7 @@ export type Lock = {
 export type LockGuard<T> = {
   content: T;
   unlock: () => void;
+  unlockPromise: Promise<void>;
 };
 
 class Mutex<T> {
@@ -47,15 +48,18 @@ class Mutex<T> {
 
     await lockPromise;
 
-    return Object.assign(this.contentWrap as { content: T }, { unlock });
+    return Object.assign(this.contentWrap as { content: T }, {
+      unlock,
+      unlockPromise: lockPromise,
+    });
   }
 
   async isLocked() {
     return this.currentAccesses >= this.maxAccesses;
   }
 
-  get content() {
-    return this.contentWrap.content;
+  getContent() {
+    return this.contentWrap;
   }
 
   private async processLock(lock: Lock) {

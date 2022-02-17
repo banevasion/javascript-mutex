@@ -63,7 +63,10 @@ var Mutex = (function () {
                         return [4, lockPromise];
                     case 1:
                         _a.sent();
-                        return [2, Object.assign(this.contentWrap, { unlock: unlock })];
+                        return [2, Object.assign(this.contentWrap, {
+                                unlock: unlock,
+                                unlockPromise: lockPromise,
+                            })];
                 }
             });
         });
@@ -75,13 +78,9 @@ var Mutex = (function () {
             });
         });
     };
-    Object.defineProperty(Mutex.prototype, "content", {
-        get: function () {
-            return this.contentWrap.content;
-        },
-        enumerable: false,
-        configurable: true
-    });
+    Mutex.prototype.getContent = function () {
+        return this.contentWrap;
+    };
     Mutex.prototype.processLock = function (lock) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
