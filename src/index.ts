@@ -50,7 +50,7 @@ class Mutex<T> {
 
     return Object.assign(this.contentWrap as { content: T }, {
       unlock,
-      unlockPromise: lockPromise,
+      unlockPromise,
     });
   }
 

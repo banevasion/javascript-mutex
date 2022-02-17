@@ -65,7 +65,7 @@ var Mutex = (function () {
                         _a.sent();
                         return [2, Object.assign(this.contentWrap, {
                                 unlock: unlock,
-                                unlockPromise: lockPromise,
+                                unlockPromise: unlockPromise,
                             })];
                 }
             });
