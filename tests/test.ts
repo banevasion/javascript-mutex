@@ -1,15 +1,14 @@
 import Mutex from "../src";
 
-const mutex = new Mutex(0);
+const mutex = new Mutex(null, 1);
 
 (async () => {
-  const lock = await mutex.lock();
+  while (true) {
+    const lock = await mutex.lock();
 
-  lock.content++;
-
-  lock.unlock();
-
-  const second = await mutex.lock();
-
-  console.log(second.content);
+    if (mutex.isLocked) {
+      setTimeout(() => lock.unlock());
+      await mutex.awaitLockRelease();
+    }
+  }
 })();

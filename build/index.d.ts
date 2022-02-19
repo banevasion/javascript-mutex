@@ -2,9 +2,6 @@ declare type ReadonlyDeep<T> = {
     readonly [P in keyof T]: ReadonlyDeep<T[P]>;
 };
 declare type Content<T> = T extends object ? ReadonlyDeep<T> : T;
-export declare type Lock = {
-    unlockPromise: Promise<void>;
-};
 export declare type LockGuard<T> = {
     content: T;
     unlock: () => void;
@@ -21,6 +18,6 @@ declare class Mutex<T> {
     readLock(): {
         content: Content<T>;
     };
-    awaitLockRelease(): Promise<void>;
+    awaitLockRelease(): Promise<void> | undefined;
 }
 export default Mutex;

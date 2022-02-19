@@ -4,10 +4,6 @@ type ReadonlyDeep<T> = {
 
 type Content<T> = T extends object ? ReadonlyDeep<T> : T;
 
-export type Lock = {
-  unlockPromise: Promise<void>;
-};
-
 export type LockGuard<T> = {
   content: T;
   unlock: () => void;
@@ -18,7 +14,7 @@ class Mutex<T> {
   maxAccesses: number;
   private currentAccesses: number;
 
-  private locks: Array<Lock>;
+  private locks: Array<Promise<void>>;
 
   private contentWrap: { content: Content<T> };
 
@@ -30,24 +26,19 @@ class Mutex<T> {
   }
 
   async lock(): Promise<LockGuard<T>> {
-    let lockReference: any = {};
-
     var unlock = () => {};
-    const unlockPromise = new Promise<void>(
-      (resolve) =>
-        (unlock = () => {
-          this.locks.splice(this.locks.indexOf(lockReference), 1);
-          this.currentAccesses--;
-          resolve();
-        })
-    );
+    const unlockPromise = new Promise<void>((resolve) => {
+      unlock = () => {
+        this.locks.splice(this.locks.indexOf(unlockPromise), 1);
+        this.currentAccesses--;
+        resolve();
+      };
+    });
 
-    lockReference.unlockPromise = unlockPromise;
-
-    this.locks.push(lockReference);
+    this.locks.push(unlockPromise);
 
     if (this.isLocked) {
-      while (this.locks[this.maxAccesses - 1] !== lockReference) {
+      while (this.locks[this.maxAccesses - 1] !== unlockPromise) {
         await this.awaitLockRelease();
       }
     }
@@ -69,7 +60,11 @@ class Mutex<T> {
   }
 
   awaitLockRelease() {
-    return Promise.race(this.locks.map((lock) => lock.unlockPromise));
+    if (!this.locks.length) {
+      return;
+    }
+
+    return Promise.race(this.locks);
   }
 }
 

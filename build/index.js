@@ -46,26 +46,24 @@ var Mutex = (function () {
     }
     Mutex.prototype.lock = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var lockReference, unlock, unlockPromise;
+            var unlock, unlockPromise;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        lockReference = {};
                         unlock = function () { };
                         unlockPromise = new Promise(function (resolve) {
-                            return (unlock = function () {
-                                _this.locks.splice(_this.locks.indexOf(lockReference), 1);
+                            unlock = function () {
+                                _this.locks.splice(_this.locks.indexOf(unlockPromise), 1);
                                 _this.currentAccesses--;
                                 resolve();
-                            });
+                            };
                         });
-                        lockReference.unlockPromise = unlockPromise;
-                        this.locks.push(lockReference);
+                        this.locks.push(unlockPromise);
                         if (!this.isLocked) return [3, 3];
                         _a.label = 1;
                     case 1:
-                        if (!(this.locks[this.maxAccesses - 1] !== lockReference)) return [3, 3];
+                        if (!(this.locks[this.maxAccesses - 1] !== unlockPromise)) return [3, 3];
                         return [4, this.awaitLockRelease()];
                     case 2:
                         _a.sent();
@@ -91,7 +89,10 @@ var Mutex = (function () {
         return this.contentWrap;
     };
     Mutex.prototype.awaitLockRelease = function () {
-        return Promise.race(this.locks.map(function (lock) { return lock.unlockPromise; }));
+        if (!this.locks.length) {
+            return;
+        }
+        return Promise.race(this.locks);
     };
     return Mutex;
 }());
