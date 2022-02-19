@@ -6,7 +6,6 @@ type Content<T> = T extends object ? ReadonlyDeep<T> : T;
 
 export type Lock = {
   unlockPromise: Promise<void>;
-  lock: () => void;
 };
 
 export type LockGuard<T> = {
@@ -31,22 +30,24 @@ class Mutex<T> {
   }
 
   async lock(): Promise<LockGuard<T>> {
-    let lockObject: any = {};
+    let lockReference: any = {};
 
     var unlock = () => {};
     const unlockPromise = new Promise<void>(
       (resolve) =>
         (unlock = () => {
-          this.locks.splice(this.locks.indexOf(lockObject), 1);
+          this.locks.splice(this.locks.indexOf(lockReference), 1);
           this.currentAccesses--;
           resolve();
         })
     );
 
-    this.locks.push(lockObject);
+    lockReference.unlockPromise = unlockPromise;
+
+    this.locks.push(lockReference);
 
     if (this.isLocked) {
-      while (this.locks[this.maxAccesses - 1] !== lockObject) {
+      while (this.locks[this.maxAccesses - 1] !== lockReference) {
         await this.awaitLockRelease();
       }
     }
