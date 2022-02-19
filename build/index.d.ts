@@ -23,6 +23,5 @@ declare class Mutex<T> {
         content: Content<T>;
     };
     awaitLockRelease(): Promise<void>;
-    private processLock;
 }
 export default Mutex;
