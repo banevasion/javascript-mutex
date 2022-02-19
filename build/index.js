@@ -46,25 +46,26 @@ var Mutex = (function () {
     }
     Mutex.prototype.lock = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var lockObject, unlock, unlockPromise;
+            var lockReference, unlock, unlockPromise;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        lockObject = {};
+                        lockReference = {};
                         unlock = function () { };
                         unlockPromise = new Promise(function (resolve) {
                             return (unlock = function () {
-                                _this.locks.splice(_this.locks.indexOf(lockObject), 1);
+                                _this.locks.splice(_this.locks.indexOf(lockReference), 1);
                                 _this.currentAccesses--;
                                 resolve();
                             });
                         });
-                        this.locks.push(lockObject);
+                        lockReference.unlockPromise = unlockPromise;
+                        this.locks.push(lockReference);
                         if (!this.isLocked) return [3, 3];
                         _a.label = 1;
                     case 1:
-                        if (!(this.locks[this.maxAccesses - 1] !== lockObject)) return [3, 3];
+                        if (!(this.locks[this.maxAccesses - 1] !== lockReference)) return [3, 3];
                         return [4, this.awaitLockRelease()];
                     case 2:
                         _a.sent();

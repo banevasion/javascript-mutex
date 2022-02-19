@@ -4,7 +4,6 @@ declare type ReadonlyDeep<T> = {
 declare type Content<T> = T extends object ? ReadonlyDeep<T> : T;
 export declare type Lock = {
     unlockPromise: Promise<void>;
-    lock: () => void;
 };
 export declare type LockGuard<T> = {
     content: T;
