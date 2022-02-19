@@ -18,6 +18,6 @@ declare class Mutex<T> {
     readLock(): {
         content: Content<T>;
     };
-    awaitLockRelease(): Promise<void> | undefined;
+    awaitLockRelease(): Promise<void>;
 }
 export default Mutex;

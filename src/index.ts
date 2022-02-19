@@ -59,12 +59,10 @@ class Mutex<T> {
     return this.contentWrap;
   }
 
-  awaitLockRelease() {
-    if (!this.locks.length) {
-      return;
+  async awaitLockRelease() {
+    if (this.locks.length) {
+      await Promise.race(this.locks);
     }
-
-    return Promise.race(this.locks);
   }
 }
 
