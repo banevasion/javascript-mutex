@@ -54,7 +54,7 @@ class Mutex<T> {
     );
   }
 
-  isLocked() {
+  get isLocked() {
     return this.currentAccesses >= this.maxAccesses;
   }
 

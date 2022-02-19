@@ -63,9 +63,13 @@ var Mutex = (function () {
             });
         });
     };
-    Mutex.prototype.isLocked = function () {
-        return this.currentAccesses >= this.maxAccesses;
-    };
+    Object.defineProperty(Mutex.prototype, "isLocked", {
+        get: function () {
+            return this.currentAccesses >= this.maxAccesses;
+        },
+        enumerable: false,
+        configurable: true
+    });
     Mutex.prototype.readLock = function () {
         return this.contentWrap;
     };
