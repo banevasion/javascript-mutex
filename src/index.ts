@@ -30,7 +30,7 @@ class Mutex<T> {
     this.currentAccesses = 0;
   }
 
-  async lock(): Promise<LockGuard<T>> {
+  lock(): Promise<LockGuard<T>> {
     var lock = () => {};
     const lockPromise = new Promise<void>((resolve) => (lock = resolve));
 
@@ -46,12 +46,12 @@ class Mutex<T> {
 
     this.processLock(lockObject);
 
-    await lockPromise;
-
-    return Object.assign(this.contentWrap as { content: T }, {
-      unlock,
-      unlockPromise,
-    });
+    return lockPromise.then(() =>
+      Object.assign(this.contentWrap as { content: T }, {
+        unlock,
+        unlockPromise,
+      })
+    );
   }
 
   isLocked() {
@@ -69,7 +69,7 @@ class Mutex<T> {
   private async processLock(lock: Lock) {
     if (this.currentAccesses >= this.maxAccesses) {
       while (this.locks[this.maxAccesses - 1] !== lock) {
-        await Promise.race(this.locks.map((lock) => lock.unlockPromise));
+        await this.awaitLockRelease();
       }
     }
 

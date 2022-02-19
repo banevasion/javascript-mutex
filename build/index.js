@@ -45,29 +45,21 @@ var Mutex = (function () {
         this.currentAccesses = 0;
     }
     Mutex.prototype.lock = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var lock, lockPromise, unlock, unlockPromise, lockObject;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        lock = function () { };
-                        lockPromise = new Promise(function (resolve) { return (lock = resolve); });
-                        unlock = function () { };
-                        unlockPromise = new Promise(function (resolve) { return (unlock = resolve); });
-                        lockObject = {
-                            lock: lock,
-                            unlockPromise: unlockPromise,
-                        };
-                        this.locks.push(lockObject);
-                        this.processLock(lockObject);
-                        return [4, lockPromise];
-                    case 1:
-                        _a.sent();
-                        return [2, Object.assign(this.contentWrap, {
-                                unlock: unlock,
-                                unlockPromise: unlockPromise,
-                            })];
-                }
+        var _this = this;
+        var lock = function () { };
+        var lockPromise = new Promise(function (resolve) { return (lock = resolve); });
+        var unlock = function () { };
+        var unlockPromise = new Promise(function (resolve) { return (unlock = resolve); });
+        var lockObject = {
+            lock: lock,
+            unlockPromise: unlockPromise,
+        };
+        this.locks.push(lockObject);
+        this.processLock(lockObject);
+        return lockPromise.then(function () {
+            return Object.assign(_this.contentWrap, {
+                unlock: unlock,
+                unlockPromise: unlockPromise,
             });
         });
     };
@@ -93,7 +85,7 @@ var Mutex = (function () {
                         _a.label = 1;
                     case 1:
                         if (!(this.locks[this.maxAccesses - 1] !== lock)) return [3, 3];
-                        return [4, Promise.race(this.locks.map(function (lock) { return lock.unlockPromise; }))];
+                        return [4, this.awaitLockRelease()];
                     case 2:
                         _a.sent();
                         return [3, 1];
