@@ -31,19 +31,25 @@ class Mutex<T> {
   }
 
   lock(): Promise<LockGuard<T>> {
+    let lockObject: any = {};
+
     var lock = () => {};
     const lockPromise = new Promise<void>((resolve) => (lock = resolve));
 
     var unlock = () => {};
-    const unlockPromise = new Promise<void>((resolve) => (unlock = resolve));
+    const unlockPromise = new Promise<void>(
+      (resolve) =>
+        (unlock = () => {
+          this.locks.splice(this.locks.indexOf(lockObject), 1);
+          this.currentAccesses--;
+          resolve();
+        })
+    );
 
-    const lockObject = {
-      lock,
-      unlockPromise,
-    };
+    lockObject.lock = lock;
+    lockObject.unlockPromise = unlockPromise;
 
     this.locks.push(lockObject);
-
     this.processLock(lockObject);
 
     return lockPromise.then(() =>
@@ -62,12 +68,12 @@ class Mutex<T> {
     return this.contentWrap;
   }
 
-  async awaitLockRelease() {
+  awaitLockRelease() {
     return Promise.race(this.locks.map((lock) => lock.unlockPromise));
   }
 
   private async processLock(lock: Lock) {
-    if (this.currentAccesses >= this.maxAccesses) {
+    if (this.isLocked) {
       while (this.locks[this.maxAccesses - 1] !== lock) {
         await this.awaitLockRelease();
       }
@@ -76,12 +82,6 @@ class Mutex<T> {
     this.currentAccesses++;
 
     lock.lock();
-
-    await lock.unlockPromise;
-
-    this.locks.splice(this.locks.indexOf(lock), 1);
-
-    this.currentAccesses--;
   }
 }
 
