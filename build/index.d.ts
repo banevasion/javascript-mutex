@@ -19,9 +19,10 @@ declare class Mutex<T> {
     constructor(content: Content<T>, maxAccesses?: number);
     lock(): Promise<LockGuard<T>>;
     isLocked(): Promise<boolean>;
-    getContent(): {
+    readLock(): {
         content: Content<T>;
     };
+    awaitLockRelease(): Promise<void>;
     private processLock;
 }
 export default Mutex;

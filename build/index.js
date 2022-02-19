@@ -78,8 +78,15 @@ var Mutex = (function () {
             });
         });
     };
-    Mutex.prototype.getContent = function () {
+    Mutex.prototype.readLock = function () {
         return this.contentWrap;
+    };
+    Mutex.prototype.awaitLockRelease = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2, Promise.race(this.locks.map(function (lock) { return lock.unlockPromise; }))];
+            });
+        });
     };
     Mutex.prototype.processLock = function (lock) {
         return __awaiter(this, void 0, void 0, function () {
