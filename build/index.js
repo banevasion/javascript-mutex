@@ -72,11 +72,7 @@ var Mutex = (function () {
         });
     };
     Mutex.prototype.isLocked = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2, this.currentAccesses >= this.maxAccesses];
-            });
-        });
+        return this.currentAccesses >= this.maxAccesses;
     };
     Mutex.prototype.readLock = function () {
         return this.contentWrap;

@@ -18,7 +18,7 @@ declare class Mutex<T> {
     private contentWrap;
     constructor(content: Content<T>, maxAccesses?: number);
     lock(): Promise<LockGuard<T>>;
-    isLocked(): Promise<boolean>;
+    isLocked(): boolean;
     readLock(): {
         content: Content<T>;
     };
